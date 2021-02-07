@@ -13,21 +13,34 @@ class LoginViewController: UIViewController {
     @IBOutlet var userNameTF: UITextField!
     @IBOutlet var passwordTF: UITextField!
     
-    private var login = "Login"
-    private var password = "123456"
+//    private var login = "Login"
+//    private var password = "123456"
+    
+    private var me = User.getInformation()
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        guard let welcomeVC = segue.destination as? WelcomeViewController else
-        { return }
-        welcomeVC.user = login
-    }
+        let tabBarVC = segue.destination as! TabBarViewController
+        let viewControllers = tabBarVC.viewControllers
+        
+        for viewController in viewControllers! {
+            if let welcomeVC = viewController as? WelcomeViewController {
+                welcomeVC.user = me.person.name + " " + me.person.surname
+            }
+        }
+        
+//        guard let welcomeVC = segue.destination as? WelcomeViewController else
+//        { return }
+//        welcomeVC.user = login
+//
+        }
+    
     
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         self.view.endEditing(true)
     }
     
     @IBAction func loginTapped() {
-        if userNameTF.text != login || passwordTF.text != password {
+        if userNameTF.text != me.userName || passwordTF.text != me.password {
             showAlert(title: "Invalid login or password",
                       message: "Please, enter correct login and password",
                       textField: passwordTF)
@@ -38,11 +51,11 @@ class LoginViewController: UIViewController {
     
     @IBAction func forgotUserNameButton() {
         showAlert(title: "Hey)",
-                  message: "Your login is \(login)")
+                  message: "Your login is \(me.userName)")
     }
     
     @IBAction func forgotPasswordButton() {
-        showAlert(title: "Hey)", message: "Your password is \(password)")
+        showAlert(title: "Hey)", message: "Your password is \(me.password)")
     }
     
     @IBAction func unwindSegue (segue: UIStoryboardSegue) {
